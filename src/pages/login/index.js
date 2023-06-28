@@ -41,6 +41,9 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import SuperFetch from 'src/hook/Axios'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -103,7 +106,7 @@ const LoginPage = () => {
 
   // ** Vars
   const { skin } = settings
-
+  const router = useRouter();
   const {
     control,
     setError,
@@ -117,12 +120,24 @@ const LoginPage = () => {
 
   const onSubmit = data => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email or Password is invalid'
+    console.log(data)
+    SuperFetch.post('/login', data,)
+      .then(response => {
+        console.log(response)
+        Cookies.set('token', response.data.token)
+        Cookies.set('user', JSON.stringify(response.data.data))
+        router.push("/dashboard/ecommerce")
+
       })
-    })
+      .catch(r => {
+        setError('email', {
+          type: 'manual',
+          message: 'Email or Password is invalid'
+        })
+      })
+    // auth.login({ email, password, rememberMe }, () => {
+
+    // })
   }
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
 
@@ -267,18 +282,15 @@ const LoginPage = () => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography component={LinkStyled} href='/forgot-password'>
-                  Forgot Password?
-                </Typography>
               </Box>
               <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Login
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'text.secondary', mr: 2 }}>New on our platform?</Typography>
-                <Typography href='/register' component={LinkStyled}>
-                  Create an account
-                </Typography>
+
+                Create an account
+
               </Box>
               <Divider
                 sx={{
@@ -290,25 +302,7 @@ const LoginPage = () => {
               >
                 or
               </Divider>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:facebook' />
-                </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:twitter' />
-                </IconButton>
-                <IconButton
-                  href='/'
-                  component={Link}
-                  onClick={e => e.preventDefault()}
-                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
-                >
-                  <Icon icon='mdi:github' />
-                </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:google' />
-                </IconButton>
-              </Box>
+
             </form>
           </Box>
         </Box>

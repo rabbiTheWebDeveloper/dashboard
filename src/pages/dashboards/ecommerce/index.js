@@ -16,6 +16,7 @@ import EcommerceCongratulationsJohn from 'src/views/dashboards/ecommerce/Ecommer
 
 // ** Custom Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import withAuth from 'src/hook/PrivateRoute'
 
 const EcommerceDashboard = () => {
   return (
@@ -63,4 +64,6 @@ const EcommerceDashboard = () => {
   )
 }
 
-export default EcommerceDashboard
+export default withAuth(EcommerceDashboard, {
+  isProtectedRoute: true
+});

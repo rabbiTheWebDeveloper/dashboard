@@ -8,6 +8,9 @@ const path = require('path')
 module.exports = {
   trailingSlash: true,
   reactStrictMode: false,
+  env: {
+    API_URL:"https://cap-git-main-rabbithewebdeveloper.vercel.app/api/v1",
+  },
   webpack: config => {
     config.resolve.alias = {
       ...config.resolve.alias,
